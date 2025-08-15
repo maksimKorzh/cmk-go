@@ -1,4 +1,5 @@
 node_modules/
 dataset/
+games/
 *.txt
 games.js
