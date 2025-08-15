@@ -5,8 +5,8 @@
   <meta name="viewport" content="user-scalable=0">
   <meta name="description" content="Game of Go - A progressive web application that runs in a web browser or as a native Android application. Improve your Go/Weiqi/Baduk skills by playing this app.">
   <meta name="keyword" content="go, weiqi, baduk, game of go, katago, neural net, web browser, android application, free, ad-free">
-  <base href="">
-  <link rel="manifest" href="/cmk-go/manifest.json">
+  <base href="cmkgo">
+  <link rel="manifest" href="/cmkgo/manifest.json">
   <style>
     html, body {
       height: 100%;
@@ -51,22 +51,20 @@
   <div class="container"><div id="goban"></div></div>
   <div id="stats" style="font-size: 38px; margin-bottom: 2%;"></div>
   <script src="tensorflow.js"></script>
-  <script src="goban.js"></script>
-  <!--script src="js/main.js"></script-->
   <script>
     var canvas, ctx, cell;
     var editMode = 0;
     var gameOver = 0;
-    var db = 1;
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/go/service-worker.js')
+      navigator.serviceWorker.register('/cmkgo/service-worker.js')
     }
     
     tf.setBackend('webgl').then(() => {
       if (tf.getBackend() !== 'webgl') {
         tf.setBackend('cpu');
-      }
+        console.log('Using CPU backend')
+      } else  console.log('Using WebGL backend')
     });
     
     function drawBoard() {
@@ -84,7 +82,6 @@
       };
       ctx.lineWidth = 1;
       ctx.stroke();
-      let candidateMoves = db ?  gameMovesBlack(saveSgf().slice(1, -1)) : gameMovesWhite(saveSgf().slice(1, -1));
       for (let row = 0; row < size-2; row++) {
         for (let col = 0; col < size-2; col++) {
           let sq = (row+1) * size + (col+1);
@@ -119,18 +116,6 @@
             ctx.fill();
             ctx.lineWidth = 1;
             ctx.stroke();
-          }
-          if (editMode && candidateMoves.length) {
-            for (let move of candidateMoves) {
-              if (board[sq] == EMPTY && sq == move) {
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.rect(col * cell + cell/4, row * cell + cell/4, Math.floor(cell/2), Math.floor(cell/2));
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                ctx.stroke();
-              }
-            }
           }
         }
       }
@@ -300,5 +285,6 @@
       document.getElementById('stats').innerHTML = 'AI(dan), Chinese rules, Komi 7.5';
     }
   </script>
+  <script src="goban.js"></script>
 </body>
 </html>
