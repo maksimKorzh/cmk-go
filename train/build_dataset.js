@@ -4,12 +4,13 @@ const fs = require('fs');
 const games = require('./games.js')
 const goban = require('./goban.js')
 
-let batchSize = 2;
+let batchSize = 128;
+let gCount = 0;
+let total_samples = 0;
 
 async function saveBatch(fromIndex, toIndex, path) {
   let statesBatch = [];
   let movesBatch = [];
-  let gCount = 0;
   let batchGames = games.slice(fromIndex, Math.min(toIndex, games.length));
   for (let game of batchGames) {
     gCount++;
@@ -23,7 +24,7 @@ async function saveBatch(fromIndex, toIndex, path) {
         movesBatch.push(moveIndex);
       }
     }
-  } console.log(`Processed ${gCount} games`)
+  }
   const X = tf.stack(statesBatch);
   const Y = tf.tensor1d(movesBatch, 'int32');
   const Xbuf = Buffer.from(X.dataSync().buffer);
@@ -37,11 +38,11 @@ async function saveBatch(fromIndex, toIndex, path) {
   YStream.end();
   X.dispose();
   Y.dispose();
-  console.log(`Saved ${X.shape[0]} total samples to ${path}`);
+  total_samples += X.shape[0];
 }
 
 (async () => {
-  for (let i = 0; i < 10; i += batchSize) {
+  for (let i = 0; i < games.length; i += batchSize) {
     await saveBatch(i, i + batchSize, './dataset');
-  }
+  } console.log(`\nTotal games: ${games.length}\nTotal samples: ${total_samples}`);
 })();
