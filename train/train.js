@@ -3,9 +3,14 @@ const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 
 const path = './dataset';
-const featureSize = 5776;   // number of NN input features
-const batchSize = 10000;    // number of samples to read from file at once
-const trainBatchSize = 128; // number of samples per training batch
+const featureSize = 5776;    // number of NN input features
+const batchSize = 10000;     // number of samples to read from file at once
+const trainBatchSize = 128;  // number of samples per training batch
+
+const channels = 96;
+const boardSize = 19;        // 19x19 board
+const inputChannels = 16;    // as per 19*19*16 = 5776
+const inputFeatures = 5776;  // number of flat input features
 
 // Shuffle single batch
 function shuffleBatch(Xarr, Yarr, featureSize) {
@@ -50,9 +55,43 @@ function* dataGenerator() {
   fs.closeSync(Yfd);
 }
 
+// Function to create model
+function createModel() {
+  const input = tf.input({ shape: [inputFeatures] });
+  const reshaped = tf.layers.reshape({ targetShape: [boardSize, boardSize, inputChannels] }).apply(input);
+  let x = tf.layers.conv2d({
+    filters: channels,
+    kernelSize: 7,
+    padding: 'same',
+    activation: 'relu'
+  }).apply(reshaped);
+  for (let i = 0; i < 4; i++) {
+    x = tf.layers.conv2d({
+      filters: channels,
+      kernelSize: 5,
+      padding: 'same',
+      activation: 'relu'
+    }).apply(x);
+  }
+  for (let i = 0; i < 6; i++) {
+    x = tf.layers.conv2d({
+      filters: channels,
+      kernelSize: 3,
+      padding: 'same',
+      activation: 'relu'
+    }).apply(x);
+  }
+  x = tf.layers.flatten().apply(x);
+  const output = tf.layers.dense({ units: 361 }).apply(x); // 19x19 output
+  return tf.model({ inputs: input, outputs: output });
+}
+
 // Create a dataset from the generator
 const dataset = tf.data.generator(dataGenerator);
 
+// Create the model
+const model = createModel();
+model.summary();
 (async () => {
   // Take just one batch to inspect
   const oneBatch = await dataset.take(1).toArray();
