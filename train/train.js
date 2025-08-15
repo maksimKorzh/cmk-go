@@ -1,8 +1,10 @@
+// Packages
 process.env.TF_CPP_MIN_LOG_LEVEL = '2';
 const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const path = require('path');
 
+// Params
 const datasetPath = './dataset';  // dataset folder name
 const featureSize = 5776;         // number of NN input features
 const batchSize = 10000;          // number of samples to read from file at once
@@ -11,6 +13,10 @@ const channels = 96;              // number of convolutional filters
 const boardSize = 19;             // 19x19 board
 const inputChannels = 16;         // 19*19*16 = 5776
 const inputFeatures = 5776;       // number of flat input features
+const totalSamples = 297802;      // "build_dataset.js" prints this number
+
+// Total batches
+const totalBatches = Math.ceil(totalSamples / trainBatchSize);
 
 // Generator that streams binary files and yields batches
 async function* dataGenerator() {
@@ -56,15 +62,34 @@ function shuffleBatch(Xarr, Yarr, featureSize) {
 function createModel() {
   const input = tf.input({ shape: [inputFeatures] });
   const reshaped = tf.layers.reshape({ targetShape: [boardSize, boardSize, inputChannels] }).apply(input);
-  let x = tf.layers.conv2d({ filters: channels, kernelSize: 7, padding: 'same', activation: 'relu' }).apply(reshaped);
+  let x = tf.layers.conv2d({
+    filters: channels,
+    kernelSize: 7,
+    padding: 'same',
+    activation: 'relu',
+    kernelInitializer: tf.initializers.heUniform()
+  }).apply(reshaped);
   for (let i = 0; i < 4; i++) {
-    x = tf.layers.conv2d({ filters: channels, kernelSize: 5, padding: 'same', activation: 'relu' }).apply(x);
+    x = tf.layers.conv2d({
+      filters: channels,
+      kernelSize: 5,
+      padding: 'same',
+      activation: 'relu',
+      kernelInitializer: tf.initializers.heUniform()
+    }).apply(x);
   }
   for (let i = 0; i < 6; i++) {
-    x = tf.layers.conv2d({ filters: channels, kernelSize: 3, padding: 'same', activation: 'relu' }).apply(x);
+    x = tf.layers.conv2d({
+      filters: channels,
+      kernelSize: 3,
+      padding: 'same',
+      activation: 'relu',
+      kernelInitializer: tf.initializers.heUniform()
+    }).apply(x);
   }
   x = tf.layers.flatten().apply(x);
-  const output = tf.layers.dense({ units: boardSize * boardSize }).apply(x);
+  //const output = tf.layers.dense({ units: boardSize * boardSize, kernelInitializer: tf.initializers.heUniform(), biasInitializer: 'zeros' }).apply(x);
+  const output = tf.layers.dense({ units: boardSize * boardSize, activation: 'softmax', kernelInitializer: tf.initializers.heUniform(), biasInitializer: 'zeros' }).apply(x);
   return tf.model({ inputs: input, outputs: output });
 }
 
@@ -103,15 +128,15 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       if (!Number.isNaN(loss)) epochLoss += loss;
       batchCount++;
       samplesSinceLastCkpt += xs.shape[0];
-      const info = `Epoch ${epoch + 1}/${epochs}, Batch ${batchCount}, loss ${loss.toFixed(4)}`;
+      const info = `Epoch ${epoch + 1}/${epochs}, Batch ${batchCount}/${totalBatches}, loss ${loss.toFixed(4)}`;
       console.log(info);
-      fs.appendFileSync('log.txt', info + '\n');
       if (samplesSinceLastCkpt >= checkpointInterval) {
         await model.save(`file://${checkpointDir}`);
         fs.writeFileSync(checkpointFile, JSON.stringify({
           epoch,
           samplesSinceLastCkpt
         }));
+        fs.appendFileSync('log.txt', info + '\n');
         console.log(`Checkpoint saved after ${samplesSinceLastCkpt} samples.`);
         samplesSinceLastCkpt = 0;
       }
@@ -128,6 +153,7 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       epoch: epoch + 1,
       samplesSinceLastCkpt
     }));
+    samplesSinceLastCkpt = 0;
     console.log(`Checkpoint saved at end of epoch ${epoch + 1}.`);
   }
 }
@@ -143,6 +169,6 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
     10,            // epochs
     0.001,         // learning rate
     'model',       // checkpoint directory
-    500            // save checkpoint every N samples
+    10000          // save checkpoint every N samples
   );
 })();
