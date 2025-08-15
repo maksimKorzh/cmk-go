@@ -1,20 +1,22 @@
 var tf;
-process.env.TF_CPP_MIN_LOG_LEVEL = '2';
-tf = require('@tensorflow/tfjs-node');
 
-//if (typeof(module) != 'undefined') {
-//  (async () => {
-//    try {
-//      const tfModule = await import('./tensorflow.js');
-//      tf = tfModule.default;
-//      danModel = await tf.loadGraphModel("https://maksimkorzh.github.io/go/model/dan/model.json");
-//      kyuModel = await tf.loadGraphModel("https://maksimkorzh.github.io/go/model/kyu/model.json");
-//    } catch (e) {
-//      process.env.TF_CPP_MIN_LOG_LEVEL = '2';
-//      tf = require('@tensorflow/tfjs-node');
-//    }
-//  })();
-//}
+if (typeof(module) != 'undefined') {
+  (async () => {
+    try {
+      const tfModule = await import('./tensorflow.js');
+      tf = tfModule.default;
+      //danModel = await tf.loadGraphModel("https://maksimkorzh.github.io/go/model/dan/model.json");
+      //kyuModel = await tf.loadGraphModel("https://maksimkorzh.github.io/go/model/kyu/model.json");
+    } catch (e) {
+      process.env.TF_CPP_MIN_LOG_LEVEL = '2';
+      tf = require('@tensorflow/tfjs-node');
+      (async () => {
+        model = await tf.loadLayersModel(`file://model/model.json`);
+        console.log('Model loaded');
+      })();
+    }
+  })();
+}
 //
 //if (typeof(document) != 'undefined') {
 //  (async () => {
@@ -407,7 +409,6 @@ async function playMove(button) {
     document.getElementById('stats').innerHTML = 'Thinking...';
   }
   try {
-    const model = await tf.loadLayersModel(`file://model/model.json`);
     const binInputs = inputTensor();
     const positionTensor = tf.tensor2d([binInputs], [1, inputFeatures]);
     const policyTensor = model.predict(positionTensor);
