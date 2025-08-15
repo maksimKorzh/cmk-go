@@ -163,7 +163,7 @@
       drawBoard();
       gameOver = 0;
       editMode = 0;
-      document.getElementById('stats').innerHTML = 'AI(dan), Chinese rules, Komi 7.5';
+      document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
     }
     
     function handlePass() {
@@ -205,25 +205,12 @@
       }
     }
     
-    function handleEval() {
-      if (!gameOver) {
-        (async () => { alert(await evaluatePosition()); })();
-      }
-    }
-    
     function handleSave() {
       if (gameOver) downloadSgf();
       else {
         editMode = 0;
         handlePass();
         downloadSgf();
-      }
-    }
-    
-    function handleAI() {
-      if (!gameOver) {
-        level ^= 1;
-        document.getElementById('stats').innerHTML = level ? 'AI (dan)' : 'AI (kyu)';
       }
     }
     
@@ -240,49 +227,12 @@
         <button onclick="handleMove();">MOVE</button>
         <button onclick="handleUndo();">UNDO</button>
         <button onclick="handleMode();">MODE</button>
-        <button onclick="handleEval();">EVAL</button>
         <button onclick="handleSave();">SAVE</button>
-        <button onclick="handleAI();">AI</button>
       `;
       window.addEventListener('resize', resizeCanvas);
       initGoban();
       resizeCanvas();
-      document.getElementById('stats').innerHTML = 'AI(dan), Chinese rules, Komi 7.5';
-    }
-    
-    function initAnalyzer() {
-      let container = document.getElementById('goban');
-      canvas = document.createElement('canvas');
-      canvas.style = 'border: 2px solid black;';
-      container.appendChild(canvas);
-      canvas.addEventListener('click', userInput);
-      ctx = canvas.getContext('2d');
-      document.getElementById('controls').innerHTML = `
-        <textarea id="sgf" spellcheck="false" style="font-size: 18px; width: 100%;" placeholder="Paste your SGF here..."></textarea>
-        <select id="moveFrom" style="font-size: 18px;">
-          <option>First</option>
-          <option>50</option>
-          <option>100</option>
-          <option>150</option>
-          <option>200</option>
-          <option>250</option>
-          <option>300</option>
-        </select>
-        <select id="moveTo" style="font-size: 18px;">
-          <option>Last</option>
-          <option>50</option>
-          <option>100</option>
-          <option>150</option>
-          <option>200</option>
-          <option>250</option>
-          <option>300</option>
-        </select>
-        <button onclick="loadGame();">Analyze</button>
-      `;
-      window.addEventListener('resize', resizeCanvas);
-      initGoban();
-      resizeCanvas();
-      document.getElementById('stats').innerHTML = 'AI(dan), Chinese rules, Komi 7.5';
+      document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
     }
   </script>
   <script src="goban.js"></script>

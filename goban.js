@@ -14,7 +14,7 @@ if (typeof(module) != 'undefined') {
 if (typeof(document) != 'undefined') {
   (async () => {
     document.getElementById('stats').innerHTML = 'Loading neural nets, please wait...';
-    model = await tf.loadLayersModel('https://github.com/maksimKorzh/cmkgo/releases/download/0.1/model.json');
+    model = await tf.loadLayersModel('https://maksimkorzh.github.io/cmkgo/model/model.json');
     setTimeout(function() {initGUI();}, 1);
   })();
 }
@@ -419,9 +419,9 @@ async function playMove(button) {
       let col_19 = best_19 % 19;
       let cmknetColor = side == BLACK ? 'Black' : 'White';
       let playerColor = (3-side) == BLACK ? 'Black' : 'White';
-      //if (typeof(document) != 'undefined') {
-      //  document.getElementById('stats').innerHTML = 'AI(' + (level ? 'dan' : 'kyu') + '), Chinese rules, Komi 7.5';
-      //}
+      if (typeof(document) != 'undefined') {
+        document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
+      }
       let bestMove = 21 * (row_19+1) + (col_19+1);
       if (!setStone(bestMove, side, false)) {
         if (move < 10) continue;
