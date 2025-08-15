@@ -12,7 +12,7 @@ if (typeof(module) != 'undefined') {
       tf = require('@tensorflow/tfjs-node');
       (async () => {
         model = await tf.loadLayersModel(`file://model/model.json`);
-        console.log('Model loaded');
+        console.error('Model loaded');
       })();
     }
   })();
