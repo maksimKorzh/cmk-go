@@ -417,12 +417,12 @@ async function playMove(button) {
     const topPolicies = flatPolicyArray
         .map((v, i) => ({ value: v, index: i }))
         .sort((a, b) => b.value - a.value)
-        .slice(0, 3)
+        //.slice(0, 10)
         .map(obj => obj.index);
     positionTensor.dispose();
     policyTensor.dispose();
     for (let move = 0; move < topPolicies.length; move++) {
-      let best_19 = topPolicies[0];
+      let best_19 = topPolicies[move];
       let row_19 = Math.floor(best_19 / 19);
       let col_19 = best_19 % 19;
       let cmknetColor = side == BLACK ? 'Black' : 'White';
@@ -432,10 +432,13 @@ async function playMove(button) {
       //}
       let bestMove = 21 * (row_19+1) + (col_19+1);
       if (!setStone(bestMove, side, false)) {
-        if (move == 0) continue;
-        if (typeof(document) != 'undefined') { alert('Pass'); }
-        else console.log('= PASS\n');
-        passMove();
+        if (move < 10) continue;
+        else {
+          if (typeof(document) != 'undefined') { alert('Pass'); }
+          else console.log('= PASS\n');
+          passMove();
+          break;
+        }
       }
       if (typeof(document) != 'undefined') { drawBoard(); }
       else console.log('= ' + 'ABCDEFGHJKLMNOPQRST'[col_19] + (size-row_19-2) + '\n');
