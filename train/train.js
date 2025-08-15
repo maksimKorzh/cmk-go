@@ -88,13 +88,13 @@ function createModel() {
     }).apply(x);
   }
   x = tf.layers.flatten().apply(x);
-  //const output = tf.layers.dense({ units: boardSize * boardSize, kernelInitializer: tf.initializers.heUniform(), biasInitializer: 'zeros' }).apply(x);
   const output = tf.layers.dense({ units: boardSize * boardSize, activation: 'softmax', kernelInitializer: tf.initializers.heUniform(), biasInitializer: 'zeros' }).apply(x);
   return tf.model({ inputs: input, outputs: output });
 }
 
 // Train model with checkpointing
 async function trainModel(model, dataset, epochs, learningRate, checkpointDir, checkpointInterval) {
+  console.log('TRAIN')
   const optimizer = tf.train.adam(learningRate);
   let startEpoch = 0;
   let samplesSinceLastCkpt = 0;
@@ -128,13 +128,12 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       if (!Number.isNaN(loss)) epochLoss += loss;
       batchCount++;
       samplesSinceLastCkpt += xs.shape[0];
-      //const info = `Epoch ${epoch + 1}/${epochs}, Samples ${batchCount * xs.shape[0]}/${totalSamples}, loss ${loss.toFixed(4)}`;
-      const info = `Epoch ${epoch + 1}/${epochs}, Samples ${batchCount * xs.shape[0] + samplesSinceLastCkpt}/${totalSamples}, loss ${loss.toFixed(4)}`;
+      const info = `Epoch ${epoch + 1}/${epochs}, Samples ${batchCount * samplesSinceLastCkpt}/${totalSamples}, loss ${loss.toFixed(4)}`;
       console.log(info);
       if (samplesSinceLastCkpt >= checkpointInterval) {
         await model.save(`file://${checkpointDir}`);
         fs.writeFileSync(checkpointFile, JSON.stringify({
-          epoch,
+          epoch: epoch + 1,
           samplesSinceLastCkpt
         }));
         fs.appendFileSync('log.txt', info + '\n');
