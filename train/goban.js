@@ -25,8 +25,8 @@ tf = require('@tensorflow/tfjs-node');
 //  })();
 //}
 
-const inputBufferLength = 19 * 19;
 const inputBufferChannels = 16;
+const inputFeatures = 19 * 19 * inputBufferChannels;
 
 const EMPTY = 0
 const BLACK = 1
@@ -335,17 +335,17 @@ function enableLadders(binInputs) {
 }
 
 function inputTensor() {
-  let katago = side;
+  let cmknet = side;
   let player = (3-side);
-  const binInputs = new Float32Array(inputBufferLength * inputBufferChannels);
+  const binInputs = new Float32Array(inputFeatures);
   for (let y = 0; y < 19; y++) {
     for (let x = 0; x < 19; x++) {
       let sq_19x19 = (19 * y + x);
       let sq_21x21 = (21 * (y+1) + (x+1))
       binInputs[inputBufferChannels * sq_19x19 + 0] = 1.0;
-      if (board[sq_21x21] == katago) binInputs[inputBufferChannels * sq_19x19 + 1] = 1.0;
+      if (board[sq_21x21] == cmknet) binInputs[inputBufferChannels * sq_19x19 + 1] = 1.0;
       if (board[sq_21x21] == player) binInputs[inputBufferChannels * sq_19x19 + 2] = 1.0;
-      if (board[sq_21x21] == katago || board[sq_21x21] == player) {
+      if (board[sq_21x21] == cmknet || board[sq_21x21] == player) {
         let libs_black = 0;
         let libs_white = 0;
         countLiberties(sq_21x21, BLACK);
@@ -372,7 +372,7 @@ function inputTensor() {
     let x = (prevLoc1 % 21)-1;
     let y = (Math.floor(prevLoc1 / 21))-1;
     if (prevLoc1) binInputs[inputBufferChannels * (19 * y + x) + 7] = 1.0;
-    if (moveIndex >= 2 && moveHistory[moveIndex-2].side == katago) {
+    if (moveIndex >= 2 && moveHistory[moveIndex-2].side == cmknet) {
       let prevLoc2 = moveHistory[moveIndex-2].move;
       let x = (prevLoc2 % 21)-1;
       let y = (Math.floor(prevLoc2 / 21))-1;
@@ -382,7 +382,7 @@ function inputTensor() {
         let x = (prevLoc3 % 21)-1;
         let y = (Math.floor(prevLoc3 / 21))-1;
         if (prevLoc3) binInputs[inputBufferChannels * (19 * y + x) + 9] = 1.0;
-        if (moveIndex >= 4 && moveHistory[moveIndex-4].side == katago) {
+        if (moveIndex >= 4 && moveHistory[moveIndex-4].side == cmknet) {
           let prevLoc4 = moveHistory[moveIndex-4].move;
           let x = (prevLoc4 % 21)-1;
           let y = (Math.floor(prevLoc4 / 21))-1;
@@ -402,65 +402,45 @@ function inputTensor() {
 }
 
 async function playMove(button) {
-//  if (typeof(document) != 'undefined') {
-//    if (editMode) { if (button) alert('Please switch to "PLAY" mode first'); return; }
-//    document.getElementById('stats').innerHTML = 'Thinking...';
-//  }
-//  const binInputs = inputTensor();
-//  try {
-//    const model = await (level ? danModel : kyuModel);
-//    const results = await model.executeAsync({
-//        "swa_model/bin_inputs": tf.tensor(binInputs, [batches, inputBufferLength, inputBufferChannels], 'float32'),
-//        "swa_model/global_inputs": tf.tensor(globalInputs, [batches, inputGlobalBufferChannels], 'float32')
-//    });
-//    const policyTensor = level ? results[1]: results[3];
-//    const policyArray = await policyTensor.slice([0, 0, 0], [1, 1, 361]).array();
-//    const flatPolicyArray = policyArray[0][0];
-//    let scores = level ? results[2] : results[1];
-//    let flatScores = scores.dataSync();
-//    let copyPolicy = JSON.parse(JSON.stringify(flatPolicyArray));
-//    let topPolicies = copyPolicy.sort((a, b) => b - a).slice(0, 3);
-//    for (let move = 0; move < topPolicies.length; move++) {
-//      let moveChoice = (moveHistory.length <= 6) ? Math.floor(Math.random() * 3) : move;
-//      let best_19 = flatPolicyArray.indexOf(topPolicies[moveChoice]);
-//      let row_19 = Math.floor(best_19 / 19);
-//      let col_19 = best_19 % 19;
-//      let scoreLead = (flatScores[2]*20).toFixed(2);
-//      let katagoColor = side == BLACK ? 'Black' : 'White';
-//      let playerColor = (3-side) == BLACK ? 'Black' : 'White';
-//      if (typeof(document) != 'undefined') {
-//        document.getElementById('stats').innerHTML = 'AI(' + (level ? 'dan' : 'kyu') + '), Chinese rules, Komi 7.5';
-//      }
-//      let bestMove = 21 * (row_19+1) + (col_19+1);
-//      if (!setStone(bestMove, side, false)) {
-//        if (move == 0) continue;
-//        if (typeof(document) != 'undefined') { alert('Pass'); }
-//        else console.log('= PASS\n');
-//        passMove();
-//      }
-//      if (typeof(document) != 'undefined') { drawBoard(); }
-//      else console.log('= ' + 'ABCDEFGHJKLMNOPQRST'[col_19] + (size-row_19-2) + '\n');
-//      break;
-//    }
-//  } catch (e) {console.log(e);}
-}
-
-async function evaluatePosition(button) {
-//  const binInputs = inputTensor();
-//  try {
-//    const model = await danModel;
-//    const results = await model.executeAsync({
-//        "swa_model/bin_inputs": tf.tensor(binInputs, [batches, inputBufferLength, inputBufferChannels], 'float32'),
-//        "swa_model/global_inputs": tf.tensor(globalInputs, [batches, inputGlobalBufferChannels], 'float32')
-//    });
-//    let scores = results[2];
-//    let flatScores = scores.dataSync(2);
-//    let scoreLead = (flatScores[2]*20).toFixed(2);
-//    let katagoColor = side == BLACK ? 'Black' : 'White';
-//    let playerColor = (3-side) == BLACK ? 'Black' : 'White';
-//    let scoreString = (scoreLead > 0 ? (katagoColor + ' leads by ') : (playerColor + ' leads by ')) + Math.abs(scoreLead) + ' points';
-//    return scoreString;
-//  } catch (e) {}
+  if (typeof(document) != 'undefined') {
+    if (editMode) { if (button) alert('Please switch to "PLAY" mode first'); return; }
+    document.getElementById('stats').innerHTML = 'Thinking...';
+  }
+  try {
+    const model = await tf.loadLayersModel(`file://model/model.json`);
+    const binInputs = inputTensor();
+    const positionTensor = tf.tensor2d([binInputs], [1, inputFeatures]);
+    const policyTensor = model.predict(positionTensor);
+    const policyArray = await policyTensor.array();
+    const flatPolicyArray = policyArray[0];
+    const topPolicies = flatPolicyArray
+        .map((v, i) => ({ value: v, index: i }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3)
+        .map(obj => obj.index);
+    positionTensor.dispose();
+    policyTensor.dispose();
+    for (let move = 0; move < topPolicies.length; move++) {
+      let best_19 = topPolicies[0];
+      let row_19 = Math.floor(best_19 / 19);
+      let col_19 = best_19 % 19;
+      let cmknetColor = side == BLACK ? 'Black' : 'White';
+      let playerColor = (3-side) == BLACK ? 'Black' : 'White';
+      //if (typeof(document) != 'undefined') {
+      //  document.getElementById('stats').innerHTML = 'AI(' + (level ? 'dan' : 'kyu') + '), Chinese rules, Komi 7.5';
+      //}
+      let bestMove = 21 * (row_19+1) + (col_19+1);
+      if (!setStone(bestMove, side, false)) {
+        if (move == 0) continue;
+        if (typeof(document) != 'undefined') { alert('Pass'); }
+        else console.log('= PASS\n');
+        passMove();
+      }
+      if (typeof(document) != 'undefined') { drawBoard(); }
+      else console.log('= ' + 'ABCDEFGHJKLMNOPQRST'[col_19] + (size-row_19-2) + '\n');
+      break;
+    }
+  } catch (e) {console.log(e);}
 }
 
 function initGoban() {
