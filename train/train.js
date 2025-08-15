@@ -128,7 +128,8 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       if (!Number.isNaN(loss)) epochLoss += loss;
       batchCount++;
       samplesSinceLastCkpt += xs.shape[0];
-      const info = `Epoch ${epoch + 1}/${epochs}, Batch ${batchCount}/${totalBatches}, loss ${loss.toFixed(4)}`;
+      //const info = `Epoch ${epoch + 1}/${epochs}, Samples ${batchCount * xs.shape[0]}/${totalSamples}, loss ${loss.toFixed(4)}`;
+      const info = `Epoch ${epoch + 1}/${epochs}, Samples ${batchCount * xs.shape[0] + samplesSinceLastCkpt}/${totalSamples}, loss ${loss.toFixed(4)}`;
       console.log(info);
       if (samplesSinceLastCkpt >= checkpointInterval) {
         await model.save(`file://${checkpointDir}`);
