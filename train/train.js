@@ -97,7 +97,7 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
   console.log('TRAIN')
   const optimizer = tf.train.adam(learningRate);
   let startEpoch = 0;
-  let totalSamplesProcessed = 0;
+  let samplesSinceLastCkpt = 0;
   const checkpointFile = path.join(checkpointDir, 'checkpoint.json');
   if (!fs.existsSync(checkpointDir)) fs.mkdirSync(checkpointDir, { recursive: true });
   if (fs.existsSync(checkpointFile)) {
@@ -108,10 +108,10 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       console.log('Model checkpoint loaded.');
     }
     startEpoch = ckptData.epoch || 0;
-    totalSamplesProcessed = ckptData.totalSamplesProcessed || 0;
+    samplesSinceLastCkpt = ckptData.samplesSinceLastCkpt || 0;
     batchIndex = ckptData.batchIndex || 0;
-    countSamples = totalSamplesProcessed;
-    console.log(`Resuming from epoch ${startEpoch}, ${totalSamplesProcessed} samples since last checkpoint.`);
+    countSamples = samplesSinceLastCkpt;
+    console.log(`Resuming from epoch ${startEpoch}, ${samplesSinceLastCkpt} samples since last checkpoint.`);
   } else { console.log('No checkpoint found, starting from scratch.'); }
   model.compile({
     optimizer: optimizer,
@@ -130,21 +130,21 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
       const loss = history.history.loss[0];
       if (!Number.isNaN(loss)) epochLoss += loss;
       batchCount++;
-      totalSamplesProcessed += xs.shape[0];
+      samplesSinceLastCkpt += xs.shape[0];
       countSamples += xs.shape[0];
       batchIndex++;
       const info = `Epoch ${epoch}/${epochs}, Samples ${countSamples}/${totalSamples}, loss ${loss.toFixed(4)}`;
       console.log(info);
-      if (totalSamplesProcessed >= checkpointInterval) {
+      if (samplesSinceLastCkpt >= checkpointInterval) {
         await model.save(`file://${checkpointDir}`);
         fs.writeFileSync(checkpointFile, JSON.stringify({
           epoch,
           batchIndex,
-          totalSamplesProcessed: countSamples
+          samplesSinceLastCkpt: countSamples
         }));
         fs.appendFileSync('log.txt', info + '\n');
-        console.log(`Checkpoint saved after ${totalSamplesProcessed} samples.`);
-        totalSamplesProcessed = 0;
+        console.log(`Checkpoint saved after ${samplesSinceLastCkpt} samples.`);
+        samplesSinceLastCkpt = 0;
       }
       xs.dispose();
       ys.dispose();
@@ -158,9 +158,9 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
     fs.writeFileSync(checkpointFile, JSON.stringify({
       epoch: epoch + 1,
       batchIndex: 0,
-      totalSamplesProcessed
+      samplesSinceLastCkpt
     }));
-    totalSamplesProcessed = 0;
+    samplesSinceLastCkpt = 0;
     console.log(`Checkpoint saved at end of epoch ${epoch + 1}.`);
   }
 }
