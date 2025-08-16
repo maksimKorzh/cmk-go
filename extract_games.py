@@ -30,7 +30,7 @@ for year in os.listdir(GAMES):
               except: pass
 
 # Seal datates
-with open('games.js', 'a') as g: g.write('];')
+with open('games.js', 'a') as g: g.write('];\n\nmodule.exports = games;')
 
 # Print
 print(f'Extracted {count} games to "games.js"')
