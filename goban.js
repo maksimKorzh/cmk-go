@@ -5,8 +5,10 @@ if (typeof(module) != 'undefined') {
     process.env.TF_CPP_MIN_LOG_LEVEL = '2';
     tf = require('@tensorflow/tfjs-node');
     (async () => {
-      model = await tf.loadLayersModel(`file://model/model.json`);
-      console.error('Model loaded');
+      try {
+        model = await tf.loadLayersModel(`file://model/model.json`);
+        console.error('Model loaded');
+      } catch (e) { console.error('Model not found'); }
     })();
   })();
 }
