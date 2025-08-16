@@ -26,3 +26,7 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
           --quantization_bytes 1 \
             /path/to/saved_model \
               /path/to/output_model
+
+# Web interface
+Should work with dummy net, but not production-ready yet<br>
+work in progress...
