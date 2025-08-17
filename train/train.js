@@ -94,7 +94,6 @@ function createModel() {
 
 // Train model with checkpointing
 async function trainModel(model, dataset, epochs, learningRate, checkpointDir, checkpointInterval) {
-  console.log('TRAIN')
   const optimizer = tf.train.adam(learningRate);
   let startEpoch = 0;
   let batchIndex = 0;
