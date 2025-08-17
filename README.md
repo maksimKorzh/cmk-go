@@ -17,7 +17,18 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
     node build_dataset.js      # creates X.bin and Y.bin training data files
     node train.js              # train neural net (you may want to adjust params or model arch)
     node gtp.js                # used to play agains the net in GoGUI, make sure "path/to/model" is correct
-    
+
+    NOTE: you may run out of RAM if processing too many games at once,
+          so the suggested way is to extract games year by year (alter
+          extract_games.py) and then run "build_dataset.js" to append
+          newly encoded games to "./dataset/X.bin" and "./dataset/Y.bin".
+          Alternatively you can populate "games.js" with your own games
+          all at once or in stages - "build_dataset.js" would append
+          encoded moves from listed games to *.bin files. Make sure
+          you keep track of eventual number of positions and put this
+          number into totalSamples variable in "train.js" to have a
+          proper current/total samples rate.
+
 # How to make customly trained net smaller (optional)
     pip install tensorflowjs
     tensorflowjs_converter \
