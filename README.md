@@ -1,17 +1,22 @@
 # CMK Go
 Play Go/Weiqi/Baduk with a Neural Net in a web browser
 
-# How to install
-    # x86_64 systems
+# Web interface
+Should work with dummy net, but not production-ready yet<br>
+work in progress...
+
+# How to train your own net
+    # Installation
     git clone https://github.com/maksimKorzh/cmkgo
     cd cmkgo/train
+    
+    # x86_64 systems
     npm install
     
-    # For raspberry pi 5:
+    # For raspberry pi 5 (mostly for running "gtp.js"):
     npm install @tensorflow/tfjs-node@4.8.0
     npm rebuild @tensorflow/tfjs-node --build-from-source
 
-# How to train your own net
     ./download.sh              # downloads games from https://badukmovies.com
     python extract_games.py    # extract moves from SGFs, write them to "games.js"
     node build_dataset.js      # creates X.bin and Y.bin training data files
@@ -29,7 +34,3 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
           you keep track of eventual number of positions and put this
           number into totalSamples variable in "train.js" to have a
           proper current/total samples rate.
-
-# Web interface
-Should work with dummy net, but not production-ready yet<br>
-work in progress...
