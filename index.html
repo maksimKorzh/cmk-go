@@ -149,18 +149,22 @@
     }
     
     function userInput(event) {
-      if (gameOver) return;
       let rect = canvas.getBoundingClientRect();
       let mouseX = event.clientX - rect.left;
       let mouseY = event.clientY - rect.top;
       let col = Math.floor(mouseX / cell);
       let row = Math.floor(mouseY / cell);
       let sq = (row+1) * size + (col+1);
-      if (board[sq]) return;
+      if (board[sq]) {
+        if (gameOver) {
+          board[sq] = EMPTY;
+          drawBoard();
+        } return;
+      }
       if (!setStone(sq, side, true)) return;
       drawBoard();
       moveSound.play();
-      setTimeout(function() { playMove(); }, 100)
+      if (!gameOver) setTimeout(function() { playMove(); }, 100)
     }
     
     function resizeCanvas() {
@@ -238,18 +242,23 @@
       document.getElementById('stats').innerHTML = 'Japanese rules, Komi 6.5';
     }
     
+    function handleEval() {
+      let result = score()
+      document.getElementById('stats').innerHTML = 'Press PLAY to play again';
+      result = `Black: ${result[BLACK]}, White: ${result[WHITE]}, Dame: ${result[EMPTY]}`;
+      setTimeout(function() { alert('Score:\n' + result); }, 100);
+    }
+
     function handlePass() {
       if (!gameOver) {
         if (editMode) passMove();
         else {
           (async () => {
-            let result = score()
             if (!moveHistory.slice(-1).move) {
               passMove();
+              passMove();
               if (!moveHistory.slice(-1).move && !moveHistory.slice(-2).move) {
-                document.getElementById('stats').innerHTML = 'Press PLAY to play again';
-                result = `Black: ${result[BLACK]}, White: ${result[WHITE]}, Dame: ${result[EMPTY]}`;
-                setTimeout(function() { alert('Game is finished\n' + result); }, 100);
+                alert('Remove dead stones, fill dame and press EVAL');
                 gameOver = 1;
               }
             }
@@ -278,12 +287,7 @@
     }
     
     function handleSave() {
-      if (gameOver) downloadSgf();
-      else {
-        editMode = 0;
-        handlePass();
-        downloadSgf();
-      }
+      downloadSgf();
     }
     
     function initGUI() {
@@ -299,6 +303,7 @@
         <button onclick="handleMove();">MOVE</button>
         <button onclick="handleUndo();">UNDO</button>
         <button onclick="handleMode();">MODE</button>
+        <button onclick="handleEval();">EVAL</button>
         <button onclick="handleSave();">SAVE</button>
       `;
       window.addEventListener('resize', resizeCanvas);
