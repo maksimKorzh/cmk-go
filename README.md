@@ -1,9 +1,11 @@
 # CMK Go
 Play Go/Weiqi/Baduk with a Neural Net in a web browser
 
+# Work in progress...
+Currently NN is under training
+
 # Web interface
-Should work with dummy net, but not production-ready yet<br>
-work in progress...
+<a href="https://maksimkorzh.github.io/cmkgo/">PLAY with dummy net</a>
 
 # How to train your own net
     # Installation
