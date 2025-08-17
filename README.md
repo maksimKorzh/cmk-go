@@ -4,7 +4,7 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
 # How to install
     # x86_64 systems
     git clone https://github.com/maksimKorzh/cmkgo
-    cd cmkgo
+    cd cmkgo/train
     npm install
     
     # For raspberry pi 5:
@@ -17,6 +17,7 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
     node build_dataset.js      # creates X.bin and Y.bin training data files
     node train.js              # train neural net (you may want to adjust params or model arch)
     node gtp.js                # used to play agains the net in GoGUI, make sure "path/to/model" is correct
+    ./pack-model.sh            # Make model 75% smaller (optional)
 
     NOTE: you may run out of RAM if processing too many games at once,
           so the suggested way is to extract games year by year (alter
@@ -28,15 +29,6 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser
           you keep track of eventual number of positions and put this
           number into totalSamples variable in "train.js" to have a
           proper current/total samples rate.
-
-# How to make customly trained net smaller (optional)
-    pip install tensorflowjs
-    tensorflowjs_converter \
-      --input_format=tf_saved_model \
-        --output_format=tfjs_layers_model \
-          --quantization_bytes 1 \
-            /path/to/saved_model \
-              /path/to/output_model
 
 # Web interface
 Should work with dummy net, but not production-ready yet<br>
