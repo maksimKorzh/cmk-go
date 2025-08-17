@@ -97,6 +97,8 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
   console.log('TRAIN')
   const optimizer = tf.train.adam(learningRate);
   let startEpoch = 0;
+  let batchIndex = 0;
+  let countSamples = 0;
   let samplesSinceLastCkpt = 0;
   const checkpointFile = path.join(checkpointDir, 'checkpoint.json');
   if (!fs.existsSync(checkpointDir)) fs.mkdirSync(checkpointDir, { recursive: true });
