@@ -7,8 +7,7 @@ if (typeof(module) != 'undefined') {
     (async () => {
       try {
         model = await tf.loadLayersModel(`file://model/model.json`);
-        console.error('Model loaded');
-      } catch (e) { console.error('Model not found'); }
+      } catch (e) {}
     })();
   })();
 }
