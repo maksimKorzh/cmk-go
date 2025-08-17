@@ -177,7 +177,7 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
     dataset,
     10,            // epochs
     0.001,         // learning rate
-    'model',       // checkpoint directory
+    'ckpt',        // checkpoint directory
     10000          // save checkpoint every N samples
   );
 })();

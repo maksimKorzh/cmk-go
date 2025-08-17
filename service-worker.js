@@ -5,14 +5,13 @@ self.addEventListener('install', (event) => {
         '/cmkgo/',
         '/cmkgo/manifest.json',
         '/cmkgo/index.html',
-        '/cmkgo/tensorflow.js',
-        '/cmkgo/goban.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.22.0/tf.min.js',
         '/cmkgo/model/group1-shard1of4.bin',
         '/cmkgo/model/group1-shard2of4.bin',
         '/cmkgo/model/group1-shard3of4.bin',
         '/cmkgo/model/group1-shard4of4.bin',
-        '/cmkgo/images/icon-192x192.png',
-        '/cmkgo/images/icon-512x512.png'
+        '/cmkgo/assets/icon-192x192.png',
+        '/cmkgo/assets/icon-512x512.png'
       ]);
     })
   );
