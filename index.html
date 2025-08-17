@@ -11,6 +11,8 @@
     html, body {
       height: 100%;
       margin: 0;
+      background-color: #111;
+      color: #aaa;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -33,10 +35,18 @@
     button {
      -webkit-tap-highlight-color: transparent;
       width: 100%;
-      font-size: 30px;
-      background-color: white;
-      color: black;
+      padding: 10px;
+      font-size: 11px;
+      background-color: #111;
+      color: #aaa;
+      border: 1px solid #555;
+      border-radius: 5px;
       cursor: pointer;
+      font-size: 20px;
+    }
+    
+    button:hover {
+      background: #444;
     }
     
     button:active {
@@ -55,6 +65,21 @@
     var canvas, ctx, cell;
     var editMode = 0;
     var gameOver = 0;
+    var sidePoints = [];
+    var countPoints = [];
+    const bgImage = new Image();
+    const blackStoneImage = new Image();
+    const whiteStoneImage = new Image();
+    const moveSound = new Audio('./assets/112-2052.wav');
+    bgImage.src = './assets/board_fox.png';
+    blackStoneImage.src = './assets/stone_b_fox.png';
+    whiteStoneImage.src = './assets/stone_w_fox.png';
+    let imagesLoaded = false;
+    bgImage.onload = blackStoneImage.onload = whiteStoneImage.onload = () => {
+      if (bgImage.complete && blackStoneImage.complete && whiteStoneImage.complete) {
+        imagesLoaded = true;
+      }
+    };
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/cmkgo/service-worker.js')
@@ -70,6 +95,7 @@
     function drawBoard() {
       cell = canvas.width / (size-2);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
       ctx.beginPath();
       for (let i = 0; i < size-2; i++) {
         const x = i * cell + cell / 2;
@@ -99,14 +125,15 @@
             ctx.stroke();
           }
           if (board[sq] == 7) continue;
-          let color = board[sq] == 1 ? 'black' : 'white';
+          const stoneImage = board[sq] == 1 ? blackStoneImage : whiteStoneImage;
           if (board[sq]) {
-            ctx.beginPath();
-            ctx.arc(col * cell + cell / 2, row * cell + cell / 2, cell / 2 - 2, 0, 2 * Math.PI);
-            ctx.fillStyle = color;
-            ctx.fill();
-            ctx.lineWidth = (color == 'white') ? 2 : 1;
-            ctx.stroke();
+            ctx.drawImage(
+              stoneImage,
+              col * cell + cell / 2 - cell / 2,
+              row * cell + cell / 2 - cell / 2,
+              cell,
+              cell
+            );
           }
           if (sq == userMove) {
             let color = board[sq] == 1 ? 'white' : 'black';
@@ -132,6 +159,7 @@
       if (board[sq]) return;
       if (!setStone(sq, side, true)) return;
       drawBoard();
+      moveSound.play();
       setTimeout(function() { playMove(); }, 100)
     }
     
@@ -153,6 +181,50 @@
       document.body.removeChild(element);
     }
     
+    function evaluate() { /* Count captures stones difference */
+      let eval = 0;
+      let blackStones = 0;
+      let whiteStones = 0;
+      for (let sq = 0; sq < size ** 2; sq++) {
+        if (!board[sq] || board[sq] == OFFBOARD) continue;
+        if (board[sq] == BLACK) blackStones += 1;
+        if (board[sq] == WHITE) whiteStones += 1;
+      } eval += (blackStones - whiteStones);
+      return (side == BLACK) ? eval : -eval;
+    }
+
+    function territory(sq) { /* Count territory, returns [side, points]*/
+      stone = board[sq];
+      if (stone == OFFBOARD) return OFFBOARD;
+      if (stone == EMPTY) {
+        block.push(sq);
+        countPoints.push(sq);
+        board[sq] |= MARKER;
+        for (let offset of [1, size, -1, -size]) territory(sq+offset);
+      } else if (stone != MARKER) {
+        sidePoints.push(stone);
+      } if (!sidePoints.length) return [EMPTY, countPoints.length];
+      else if (sidePoints.every((element) => element == sidePoints[0]))
+        return [sidePoints[0], countPoints.length];
+      else return [EMPTY, countPoints.length];
+    }
+    
+    function score() { /* Scores game, returns points [empty, black, white]*/
+      let scorePosition = [0, 0, 0];
+      for (let sq = 0; sq < size ** 2; sq++) {
+        if (board[sq]) continue;
+        let result = territory(sq);
+        scorePosition[result[0]] += result[1];
+        sidePoints = [];
+        countPoints = [];
+      } restoreBoard();
+      let prisoners = (side == BLACK ? evaluate(): -evaluate());
+      if (prisoners > 0) scorePosition[BLACK] += prisoners;
+      if (prisoners < 0) scorePosition[WHITE] += Math.abs(prisoners);
+      scorePosition[WHITE] += komi;
+      return scorePosition;
+    }
+
     function handleGo() {
       if (!gameOver) {
         if (editMode) handleMode();
@@ -163,7 +235,7 @@
       drawBoard();
       gameOver = 0;
       editMode = 0;
-      document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
+      document.getElementById('stats').innerHTML = 'Japanese rules, Komi 6.5';
     }
     
     function handlePass() {
@@ -171,12 +243,12 @@
         if (editMode) passMove();
         else {
           (async () => {
-            let result = await evaluatePosition()
+            let result = score()
             if (!moveHistory.slice(-1).move) {
               passMove();
               if (!moveHistory.slice(-1).move && !moveHistory.slice(-2).move) {
-                result = result.replace('leads', 'wins');
                 document.getElementById('stats').innerHTML = 'Press PLAY to play again';
+                result = `Black: ${result[BLACK]}, White: ${result[WHITE]}, Dame: ${result[EMPTY]}`;
                 setTimeout(function() { alert('Game is finished\n' + result); }, 100);
                 gameOver = 1;
               }
@@ -232,7 +304,7 @@
       window.addEventListener('resize', resizeCanvas);
       initGoban();
       resizeCanvas();
-      document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
+      document.getElementById('stats').innerHTML = 'Japanese rules, Komi 6.5';
     }
   </script>
   <script> // goban.js
@@ -269,7 +341,7 @@
     
     var board = [];
     var moveHistory = [];
-    var komi = 7.5;
+    var komi = 6.5;
     var size = 21;
     var side = BLACK;
     var liberties = [];
@@ -379,7 +451,7 @@
     }
     
     function restoreBoard() {
-      block = []; liberties = []; points_side = [];
+      block = []; liberties = []; sidePoints = [];
       for (let sq = 0; sq < size ** 2; sq++) {
         if (board[sq] != OFFBOARD) board[sq] &= 3;
       }
@@ -658,7 +730,7 @@
           let cmknetColor = side == BLACK ? 'Black' : 'White';
           let playerColor = (3-side) == BLACK ? 'Black' : 'White';
           if (typeof(document) != 'undefined') {
-            document.getElementById('stats').innerHTML = 'Chinese rules, Komi 7.5';
+            document.getElementById('stats').innerHTML = 'Japanese rules, Komi 6.5';
           }
           let bestMove = 21 * (row_19+1) + (col_19+1);
           if (!setStone(bestMove, side, false)) {
@@ -670,7 +742,7 @@
               break;
             }
           }
-          if (typeof(document) != 'undefined') { drawBoard(); }
+          if (typeof(document) != 'undefined') { drawBoard(); moveSound.play(); }
           else console.log('= ' + 'ABCDEFGHJKLMNOPQRST'[col_19] + (size-row_19-2) + '\n');
           break;
         }
