@@ -14,7 +14,7 @@ with open('games.js', 'w') as f: f.write('games = [\n')
 for year in os.listdir(GAMES):
   year_path = './' + GAMES + '/' + year
   parse_year = int(year)
-  if os.path.isdir(year_path) and parse_year > 2012:
+  if os.path.isdir(year_path) and parse_year == 2017:
     for dir in os.listdir(year_path):
       game_dir = year_path + '/' + dir
       if os.path.isdir(game_dir):
