@@ -7,6 +7,15 @@ Currently NN is under training
 # Web interface
 <a href="https://maksimkorzh.github.io/cmkgo/">PLAY with dummy net</a>
 
+# Training results
+    # 11 layer CNN with dense output layer
+    Size:        56Mb
+    Epochs:      5
+    Train time: ~28 hours on Intel Core i5-10400 CPU @ 2.90GHz × 6
+    Avg. loss:   2.14
+    Accuracy:    39.15% (~20k training samples)
+                 32.05% (~17k validation samples)
+    
 # How to train your own net
     # Installation
     git clone https://github.com/maksimKorzh/cmkgo
@@ -25,6 +34,11 @@ Currently NN is under training
     node train.js              # train neural net (you may want to adjust params or model arch)
     node gtp.js                # used to play agains the net in GoGUI, make sure "path/to/model" is correct
     ./pack-model.sh            # Make model 75% smaller (optional)
+    
+    accuracy.js                # used to evaluate NN accuracy in percents,
+                               # assumes "model.json", "weights.bin",
+                               # "X_train.bin", "Y_train.bin", "X_val.bin", "Y_val.bin"
+                               # to be in "./test" folder
 
     NOTE: you may run out of RAM if processing too many games at once,
           so the suggested way is to extract games year by year (alter
