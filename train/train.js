@@ -122,6 +122,8 @@ async function trainModel(model, dataset, epochs, learningRate, checkpointDir, c
   for (let epoch = startEpoch; epoch < epochs; epoch++) {
     let epochLoss = 0;
     let batchCount = 0;
+    batchIndex = 0;
+    if (countSamples => totalSamples) countSamples = 0;
     const iterator = await dataset.iterator();
     for (let i = 0; i < batchIndex; i++) await iterator.next();
     let result = await iterator.next();
