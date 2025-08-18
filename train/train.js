@@ -58,38 +58,57 @@ function shuffleBatch(Xarr, Yarr, featureSize) {
   }
 }
 
-// Create model
+// Create model -- katago-like b6c96 policy only (no value head) network --
 function createModel() {
   const input = tf.input({ shape: [inputFeatures] });
   const reshaped = tf.layers.reshape({ targetShape: [boardSize, boardSize, inputChannels] }).apply(input);
   let x = tf.layers.conv2d({
     filters: channels,
-    kernelSize: 7,
+    kernelSize: 3,
     padding: 'same',
-    activation: 'relu',
-    kernelInitializer: tf.initializers.heUniform()
+    useBias: false,
+    kernelInitializer: tf.initializers.heNormal()
   }).apply(reshaped);
-  for (let i = 0; i < 4; i++) {
-    x = tf.layers.conv2d({
-      filters: channels,
-      kernelSize: 5,
-      padding: 'same',
-      activation: 'relu',
-      kernelInitializer: tf.initializers.heUniform()
-    }).apply(x);
-  }
+  x = tf.layers.batchNormalization().apply(x);
+  x = tf.layers.activation({ activation: 'relu' }).apply(x);
   for (let i = 0; i < 6; i++) {
-    x = tf.layers.conv2d({
+    const shortcut = x;
+    let r = tf.layers.conv2d({
       filters: channels,
       kernelSize: 3,
       padding: 'same',
-      activation: 'relu',
-      kernelInitializer: tf.initializers.heUniform()
+      useBias: false,
+      kernelInitializer: tf.initializers.heNormal()
     }).apply(x);
+    r = tf.layers.batchNormalization().apply(r);
+    r = tf.layers.activation({ activation: 'relu' }).apply(r);
+    r = tf.layers.conv2d({
+      filters: channels,
+      kernelSize: 3,
+      padding: 'same',
+      useBias: false,
+      kernelInitializer: tf.initializers.heNormal()
+    }).apply(r);
+    r = tf.layers.batchNormalization().apply(r);
+    x = tf.layers.add().apply([shortcut, r]);
+    x = tf.layers.activation({ activation: 'relu' }).apply(x);
   }
-  x = tf.layers.flatten().apply(x);
-  const output = tf.layers.dense({ units: boardSize * boardSize, activation: 'softmax', kernelInitializer: tf.initializers.heUniform(), biasInitializer: 'zeros' }).apply(x);
-  return tf.model({ inputs: input, outputs: output });
+  let policy = tf.layers.conv2d({
+    filters: 2,
+    kernelSize: 1,
+    padding: 'same',
+    useBias: false,
+    kernelInitializer: tf.initializers.heNormal()
+  }).apply(x);
+  policy = tf.layers.batchNormalization().apply(policy);
+  policy = tf.layers.activation({ activation: 'relu' }).apply(policy);
+  policy = tf.layers.flatten().apply(policy);
+  policy = tf.layers.dense({
+    units: boardSize * boardSize,
+    activation: 'softmax',
+    kernelInitializer: tf.initializers.heNormal()
+  }).apply(policy);
+  return tf.model({ inputs: input, outputs: policy });
 }
 
 // Train model with checkpointing
