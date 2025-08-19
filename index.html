@@ -36,13 +36,12 @@
      -webkit-tap-highlight-color: transparent;
       width: 100%;
       padding: 10px;
-      font-size: 11px;
       background-color: #111;
       color: #aaa;
       border: 1px solid #555;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 30px;
     }
     
     button:hover {
@@ -164,7 +163,7 @@
       if (!setStone(sq, side, true)) return;
       drawBoard();
       moveSound.play();
-      if (!gameOver) setTimeout(function() { playMove(); }, 100)
+      if (!gameOver) setTimeout(function() { playMove(); }, 200)
     }
     
     function resizeCanvas() {
