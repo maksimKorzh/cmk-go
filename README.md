@@ -53,13 +53,11 @@ Following table shows training results comparison:
    <th>Acc. seen</th>
    <th>Acc. pred</th>
    <th>Self-play strength</th>
-   <th>Winrate against me (OGS 9 kyu)</th>
    <th>Winrate against GnuGo (6 kyu)</th>
  </tr>
  <tr>
    <td>1</td>
    <td>3.5185</td>
-   <td>N/A</td>
    <td>N/A</td>
    <td>N/A</td>
    <td>N/A</td>
@@ -72,7 +70,6 @@ Following table shows training results comparison:
    <td>36.43%</td>
    <td>~14 kyu</td>
    <td>0%</td>
-   <td>0%</td>
  </tr>
  </tr>
    <td>3</td>
@@ -80,7 +77,6 @@ Following table shows training results comparison:
    <td>37.40%</td>
    <td>36.65%</td>
    <td>~6 kyu</td>
-   <td>90%</td>
    <td>10%</td>
  </tr>
  </tr>
@@ -89,7 +85,6 @@ Following table shows training results comparison:
    <td>39.27%</td>
    <td>37.03%</td>
    <td>~6 kyu</td>
-   <td>100%</td>
    <td>30%</td>
  </tr>
 </table>
