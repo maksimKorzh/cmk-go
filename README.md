@@ -22,8 +22,8 @@ Following table shows training results comparison:
     <th>Samples</th>
     <th>Epochs</th>
     <th>Loss</th>
-    <th>Acc. train</th>
-    <th>Acc. val</th>
+    <th>Acc. seen</th>
+    <th>Acc. pred</th>
   </tr>
   <tr>
     <td>cmkgo-cnn11c96-s1067091</td>
@@ -43,14 +43,15 @@ Following table shows training results comparison:
   </tr>
 </table>
 <br>
-and here is the <strong>cmkgo-b6c96-s1067091</strong> training progress (~8.5hrs/epoch):
+<strong>cmkgo-b6c96-s1067091</strong> training progress (~8.5hrs/epoch)
+<br>
 <br>
 <table>
  <tr>
    <th>Epoch</th>
    <th>Loss</th>
-   <th>Acc. train</th>
-   <th>Acc. val</th>
+   <th>Acc. seen</th>
+   <th>Acc. pred</th>
    <th>Self-play strength</th>
    <th>Winrate against me (OGS 9 kyu)</th>
    <th>Winrate against GnuGo (6 kyu)</th>
