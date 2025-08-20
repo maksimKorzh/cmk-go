@@ -117,6 +117,8 @@ Following table shows training results comparison:
                                # assumes "model.json", "weights.bin",
                                # "X_train.bin", "Y_train.bin", "X_val.bin", "Y_val.bin"
                                # to be in "./test" folder
+    
+    playok.js                  # plays vs human players at "playok.com/go" under guest account
 
     NOTE: you may run out of RAM if processing too many games at once,
           so the suggested way is to extract games year by year (alter
