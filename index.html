@@ -712,7 +712,6 @@
     async function playMove(button) {
       if (typeof(document) != 'undefined') {
         if (editMode) { if (button) alert('Please switch to "PLAY" mode first'); return; }
-        document.getElementById('stats').innerHTML = 'Thinking...';
       }
       try {
         const binInputs = inputTensor();
