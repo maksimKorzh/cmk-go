@@ -44,9 +44,10 @@ Following table shows training results comparison:
     <td>6 residual blocks, 96 convolutional filters (katago style)</td>
     <td>~5Mb</td>
     <td>~44hr</td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>2.28</td>
+    <td>37.03%</td>
+    <td>37.50%</td>
+    <td>~6 kyu</td>
   </tr>
 </table>
 <br>
@@ -99,7 +100,7 @@ Following table shows training results comparison:
    <td>2.2887</td>
    <td>40.81%</td>
    <td>37.50%</td>
-   <td>~6kyu</td>
+   <td>~ 6kyu</td>
    <td>40%</td>
  </tr>
 </table>
