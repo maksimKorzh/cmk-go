@@ -1,14 +1,17 @@
 # CMK Go
-Play Go/Weiqi/Baduk with a Neural Net in a web browser
+Play Go/Weiqi/Baduk with a Neural Net in a web browser<br>
+<a href="https://maksimkorzh.github.io/cmkgo/">PLAY NOW!</a>
 
-# Work in progress...
-Currently NN is under training
-
-# Web interface
-<a href="https://maksimkorzh.github.io/cmkgo/">PLAY with dummy net</a>
+# GTP mode
+1. Download source code
+2. Download neural net from release page
+3. Create folder "model" under /cmkgo/train/
+4. Copy/paste "model.json" and "weights.bin" to "model" folder
+5. Connect "gtp.js" to GoGUI or other user interface
 
 # Training results
-I trained two policy nets (no value heads) on Intel Core i5-10400 CPU @ 2.90GHz × 6:
+I trained two policy nets (no value heads) on Intel Core i5-10400 CPU @ 2.90GHz × 6<br>
+using 1067091 training positions from 5155 Pro games (years 2013-2017):
 <li>cmkgo-cnn11c96-s1067091</li>
 <li>cmkgo-b6c96-s1067091</li>
 <br>
@@ -21,27 +24,29 @@ Following table shows training results comparison:
     <th>Arch</th>
     <th>Size</th>
     <th>Time</th>
-    <th>Samples</th>
-    <th>Epochs</th>
     <th>Loss</th>
     <th>Acc. true</th>
     <th>Acc. pred</th>
+    <th>Strength</th>
   </tr>
   <tr>
     <td>cnn11c96</td>
     <td>11 layer CNN with dense output layer, 96 convolutional filters</td>
     <td>~56Mb</td>
     <td>~28hr</td>
-    <td>1067091</td>
-    <td>5</td>
     <td>2.14</td>
     <td>39.15% (~20k samples)</td>
     <td>32.05% (~17k samples)</td>
+    <td>~10 kyu</td>
   </tr>
   <tr>
     <td>b6c96</td>
     <td>6 residual blocks, 96 convolutional filters (katago style)</td>
     <td>~5Mb</td>
+    <td>~44hr</td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
 </table>
 <br>
@@ -88,6 +93,14 @@ Following table shows training results comparison:
    <td>37.03%</td>
    <td>~6 kyu</td>
    <td>30%</td>
+ </tr>
+ </tr>
+   <td>5</td>
+   <td>2.2887</td>
+   <td>40.81%</td>
+   <td>37.50%</td>
+   <td>~6kyu</td>
+   <td>40%</td>
  </tr>
 </table>
     
