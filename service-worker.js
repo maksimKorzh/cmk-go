@@ -7,10 +7,7 @@ self.addEventListener('install', (event) => {
         '/cmkgo/index.html',
         '/cmkgo/tfjs/tf.js',
         '/cmkgo/model/model.json',
-        '/cmkgo/model/group1-shard1of4.bin',
-        '/cmkgo/model/group1-shard2of4.bin',
-        '/cmkgo/model/group1-shard3of4.bin',
-        '/cmkgo/model/group1-shard4of4.bin',
+        '/cmkgo/model/weights.bin',
         '/cmkgo/assets/icon-192x192.png',
         '/cmkgo/assets/icon-512x512.png'
       ]);
