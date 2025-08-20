@@ -28,7 +28,7 @@ Following table shows training results comparison:
     <th>Acc. pred</th>
   </tr>
   <tr>
-    <td>cmkgo-cnn11c96-s1067091</td>
+    <td>cnn11c96</td>
     <td>11 layer CNN with dense output layer, 96 convolutional filters</td>
     <td>~56Mb</td>
     <td>~28hr</td>
@@ -39,7 +39,7 @@ Following table shows training results comparison:
     <td>32.05% (~17k samples)</td>
   </tr>
   <tr>
-    <td>cmkgo-b6c96-s1067091</td>
+    <td>b6c96</td>
     <td>6 residual blocks, 96 convolutional filters (katago style)</td>
     <td>~5Mb</td>
   </tr>
