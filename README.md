@@ -9,10 +9,12 @@ Currently NN is under training
 
 # Training results
 I trained two policy nets (no value heads) on Intel Core i5-10400 CPU @ 2.90GHz × 6:
-<li>cmkgo-b1c96-s1067091</li>
+<li>cmkgo-cnn11c96-s1067091</li>
 <li>cmkgo-b6c96-s1067091</li>
 <br>
 Following table shows training results comparison:
+<br>
+<br>
 <table>
   <tr>
     <th>Name</th>
