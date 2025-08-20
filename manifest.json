@@ -1,7 +1,7 @@
 {
   "name": "CMK Go",
   "short_name": "Go",
-  "start_url": "cmkgo",
+  "start_url": "/cmkgo/",
   "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#ffffff",
