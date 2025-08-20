@@ -22,7 +22,7 @@ Following table shows training results comparison:
     <th>Samples</th>
     <th>Epochs</th>
     <th>Loss</th>
-    <th>Acc. seen</th>
+    <th>Acc. true</th>
     <th>Acc. pred</th>
   </tr>
   <tr>
@@ -50,7 +50,7 @@ Following table shows training results comparison:
  <tr>
    <th>Epoch</th>
    <th>Loss</th>
-   <th>Acc. seen</th>
+   <th>Acc. true</th>
    <th>Acc. pred</th>
    <th>Self-play strength</th>
    <th>Winrate against GnuGo (6 kyu)</th>
