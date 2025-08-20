@@ -13,10 +13,6 @@ I trained two policy nets (no value heads) on Intel Core i5-10400 CPU @ 2.90GHz 
 <li>cmkgo-b6c96-s1067091</li>
 <br>
 Following table shows training results comparison:
-<style>
-  table, th, td { border: 1px solid black; }
-  td { text-align: right; }
-</style>
 <table>
   <tr>
     <th>Name</th>
@@ -28,8 +24,6 @@ Following table shows training results comparison:
     <th>Loss</th>
     <th>Acc. train</th>
     <th>Acc. val</th>
-    <th>Self-play strength</th>
-    <th>Play against me (OGS 9kyu)</th>
   </tr>
   <tr>
     <td>cmkgo-cnn11c96-s1067091</td>
@@ -41,8 +35,6 @@ Following table shows training results comparison:
     <td>2.14</td>
     <td>39.15% (~20k samples)</td>
     <td>32.05% (~17k samples)</td>
-    <td>~10kyu</td>
-    <td>Loses tactically, can win occasionally</tr>
   </tr>
   <tr>
     <td>cmkgo-b6c96-s1067091</td>
@@ -52,6 +44,7 @@ Following table shows training results comparison:
 </table>
 <br>
 and here is the <strong>cmkgo-b6c96-s1067091</strong> training progress (~8.5hrs/epoch):
+<br>
 <table>
  <tr>
    <th>Epoch</th>
@@ -116,7 +109,7 @@ and here is the <strong>cmkgo-b6c96-s1067091</strong> training progress (~8.5hrs
     python extract_games.py    # extract moves from SGFs, write them to "games.js"
     node build_dataset.js      # creates X.bin and Y.bin training data files
     node train.js              # train neural net (you may want to adjust params or model arch)
-    node gtp.js                # used to play agains the net in GoGUI, make sure "path/to/model" is correct
+    node gtp.js                # used to play against the net in GoGUI, make sure "path/to/model" is correct
     ./pack-model.sh            # Make model 75% smaller (optional)
     
     accuracy.js                # used to evaluate NN accuracy in percents,
