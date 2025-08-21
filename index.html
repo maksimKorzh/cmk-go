@@ -83,13 +83,25 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/cmkgo/service-worker.js')
     }
-    
-    tf.setBackend('webgl').then(() => {
-      if (tf.getBackend() !== 'webgl') {
-        tf.setBackend('cpu');
-        console.log('Using CPU backend')
-      } else  console.log('Using WebGL backend')
-    });
+
+    function isFirefoxMobile() {
+      const ua = navigator.userAgent;
+      // Firefox on Android
+      const firefoxAndroid = /Android/i.test(ua) && /Firefox/i.test(ua);
+      // Firefox on iOS
+      const firefoxiOS = /iPhone|iPad|iPod/i.test(ua) && /FxiOS/i.test(ua);
+      return firefoxAndroid || firefoxiOS;
+    }
+
+    if (isFirefoxMobile()) tf.setBackend('cpu');
+      else {
+      tf.setBackend('webgl').then(() => {
+        if (tf.getBackend() !== 'webgl') {
+          tf.setBackend('cpu');
+          console.log('Using CPU backend')
+        } else  console.log('Using WebGL backend')
+      });
+    }
     
     function drawBoard() {
       cell = canvas.width / (size-2);

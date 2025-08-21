@@ -5,9 +5,10 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser<br>
  - Chrome mobile/desktop
  - Firefox desktop
 <br>
-<br>
 <a href="https://maksimkorzh.github.io/cmkgo/">PLAY NOW!</a><br>
-Firefox mobile is not working for some reason, I'm working on it...
+Firefox mobile is working only with CPU backend because its WebGL
+has issues with floating point precision and calculates forward pass
+in a completely misleading way.
 
 # GTP mode
 1. Download source code
