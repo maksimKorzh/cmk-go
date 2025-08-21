@@ -12,8 +12,8 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser<br>
 # Training results
 I trained two policy nets (no value heads) on Intel Core i5-10400 CPU @ 2.90GHz × 6<br>
 using 1067091 training positions from 5155 Pro games (years 2013-2017):
-<li>cmkgo-cnn11c96-s1067091</li>
-<li>cmkgo-b6c96-s1067091</li>
+<li><strong>cmkgo-cnn11c96-s1067091</strong></li>
+<li><strong>cmkgo-b6c96-s1067091</strong></li>
 <br>
 Following table shows training results comparison:
 <br>
@@ -44,9 +44,9 @@ Following table shows training results comparison:
     <td>6 residual blocks, 96 convolutional filters (katago style)</td>
     <td>~5Mb</td>
     <td>~52hr</td>
-    <td>2.28</td>
-    <td>37.03%</td>
-    <td>37.50%</td>
+    <td>2.21</td>
+    <td>41.37%</td>
+    <td>37.75%</td>
     <td>~6 kyu</td>
   </tr>
 </table>
