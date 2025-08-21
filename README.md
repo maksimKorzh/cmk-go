@@ -8,7 +8,7 @@ Play Go/Weiqi/Baduk with a Neural Net in a web browser<br>
 <a href="https://maksimkorzh.github.io/cmkgo/">PLAY NOW!</a><br>
 Firefox mobile is working only with CPU backend because its WebGL
 has issues with floating point precision and calculates forward pass
-in a completely misleading way.
+in a completely misleading way. Thanks to **wurf3** from OGS for reporting bug.
 
 # GTP mode
 1. Download source code
