@@ -254,6 +254,10 @@
     }
     
     function handleEval() {
+      if (!gameOver) {
+        alert('Game is scored after 2 consecutive passes');
+        return;
+      }
       let result = score()
       document.getElementById('stats').innerHTML = 'Press PLAY to play again';
       result = `Black: ${result[BLACK]}, White: ${result[WHITE]}, Dame: ${result[EMPTY]}`;
