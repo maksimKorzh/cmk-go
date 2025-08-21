@@ -722,7 +722,6 @@
         const topPolicies = flatPolicyArray
             .map((v, i) => ({ value: v, index: i }))
             .sort((a, b) => b.value - a.value)
-            //.slice(0, 10)
             .map(obj => obj.index);
         positionTensor.dispose();
         policyTensor.dispose();
@@ -737,13 +736,10 @@
           }
           let bestMove = 21 * (row_19+1) + (col_19+1);
           if (!setStone(bestMove, side, false)) {
-            if (move < 10) continue;
-            else {
-              if (typeof(document) != 'undefined') { alert('Pass'); }
-              else console.log('= PASS\n');
-              passMove();
-              break;
-            }
+            if (typeof(document) != 'undefined') { alert('Pass'); }
+            else console.log('= PASS\n');
+            passMove();
+            break;
           }
           if (typeof(document) != 'undefined') { drawBoard(); moveSound.play(); }
           else console.log('= ' + 'ABCDEFGHJKLMNOPQRST'[col_19] + (size-row_19-2) + '\n');
