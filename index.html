@@ -329,7 +329,7 @@
       (async () => {
         document.getElementById('stats').innerHTML = 'Loading neural nets, please wait...';
         model = await tf.loadLayersModel('https://maksimkorzh.github.io/cmkgo/model/model.json');
-        setTimeout(function() {initGUI();}, 1);
+        setTimeout(function() {initGUI();}, 100);
       })();
     }
     
