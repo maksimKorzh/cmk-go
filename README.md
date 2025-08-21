@@ -43,7 +43,7 @@ Following table shows training results comparison:
     <td>b6c96</td>
     <td>6 residual blocks, 96 convolutional filters (katago style)</td>
     <td>~5Mb</td>
-    <td>~44hr</td>
+    <td>~52hr</td>
     <td>2.28</td>
     <td>37.03%</td>
     <td>37.50%</td>
@@ -60,13 +60,11 @@ Following table shows training results comparison:
    <th>Loss</th>
    <th>Acc. true</th>
    <th>Acc. pred</th>
-   <th>Self-play strength</th>
    <th>Winrate against GnuGo (6 kyu)</th>
  </tr>
  <tr>
    <td>1</td>
    <td>3.5185</td>
-   <td>N/A</td>
    <td>N/A</td>
    <td>N/A</td>
    <td>N/A</td>
@@ -76,7 +74,6 @@ Following table shows training results comparison:
    <td>2.6923</td>
    <td>34.84%</td>
    <td>36.43%</td>
-   <td>~14 kyu</td>
    <td>0%</td>
  </tr>
  </tr>
@@ -84,7 +81,6 @@ Following table shows training results comparison:
    <td>2.5016</td>
    <td>37.40%</td>
    <td>36.65%</td>
-   <td>~6 kyu</td>
    <td>10%</td>
  </tr>
  </tr>
@@ -92,7 +88,6 @@ Following table shows training results comparison:
    <td>2.3802</td>
    <td>39.27%</td>
    <td>37.03%</td>
-   <td>~6 kyu</td>
    <td>30%</td>
  </tr>
  </tr>
@@ -100,11 +95,17 @@ Following table shows training results comparison:
    <td>2.2887</td>
    <td>40.81%</td>
    <td>37.50%</td>
-   <td>~ 6kyu</td>
    <td>40%</td>
  </tr>
+ </tr>
+   <td>6</td>
+   <td>2.2135</td>
+   <td>41.37%</td>
+   <td>37.75%</td>
+   <td>50%</td>
+ </tr>
 </table>
-    
+
 # How to train your own net
     # Installation
     git clone https://github.com/maksimKorzh/cmkgo
