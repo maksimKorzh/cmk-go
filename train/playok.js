@@ -20,11 +20,14 @@ cmkgo = spawn(
     stdio: ['pipe', 'pipe', 'pipe']
 });
 setTimeout(function () { socket = connect(); }, 5000);
+
+RANK_LIMIT = 1200;
 side = 0;
 cmkgoSide = -1;
 TABLE = 0;
 joinedTable = 0;
 activeGame = 0;
+players = {};
 
 function acceptChallenge(socket, color, table) {
   message(socket, 'join', table);
@@ -117,6 +120,12 @@ function connect() {
   });
   socket.on('message', function (data) {
     let response = JSON.parse(data);
+    if (response.i[0] == 25) { // player info
+      let player = response.s[0];
+      let rating = response.i[3];
+      players[player] = parseInt(rating);
+    }
+    
     if (response.i[0] == 70) { // lobby & pairing
       let boardSize = response.s[0].split(',')[1];
       if (parseInt(boardSize) != 19) return;
@@ -125,10 +134,20 @@ function connect() {
       let player2 = response.s[2];
       if (joinedTable == 1) return;
       if (response.i[3] == 1 && response.i[4] == 0) {
-        acceptChallenge(socket, 'white', table);
+        let opponent = response.s[1];
+        if (opponent in players && players[opponent] < RANK_LIMIT) {
+          acceptChallenge(socket, 'white', table);
+        } else if (opponent in players) {
+          console.log(`playok: black player ${opponent}[${players[opponent]}] at table #${table} is stronger than ${RANK_LIMIT}, skipping...`);
+        }
       }
       if (response.i[3] == 0 && response.i[4] == 1) {
-        acceptChallenge(socket, 'black', table);
+        let opponent = response.s[2];
+        if (opponent in players && players[opponent] < RANK_LIMIT) {
+          acceptChallenge(socket, 'black', table);
+        } else if (opponent in players) {
+          console.log(`playok: white player ${opponent}[${players[opponent]}] at table #${table} is stronger than ${RANK_LIMIT}, skipping...`);
+        }
       }
     }
     
